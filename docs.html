@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NegaScreener Docs — ser read this</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #000;
+  --bg2: #0a0a0a;
+  --bg3: #111;
+  --border: #1a1a1a;
+  --border2: #2a2a2a;
+  --green: #00ff9d;
+  --green2: #00cc7a;
+  --green-glow: rgba(0,255,157,0.15);
+  --red: #ef4444;
+  --yellow: #f0b90b;
+  --text: #fff;
+  --text2: #888;
+  --text3: #444;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  overflow-x:hidden;
+  
+}
+
+
+
+/* GLOW */
+#glow{
+  position:fixed;width:500px;height:500px;border-radius:50%;
+  pointer-events:none;z-index:0;left:0;top:0;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(0,255,157,0.06) 0%,transparent 70%);
+  will-change:left,top;mix-blend-mode:screen;
+}
+
+/* GRID */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,157,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,157,0.025) 1px,transparent 1px);
+  background-size:52px 52px;
+  pointer-events:none;z-index:0;
+}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh;position:relative;z-index:2}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:rgba(10,10,10,0.9);
+  border-right:1px solid var(--border);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  backdrop-filter:blur(10px);
+  padding:0 0 40px;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.sb-logo{
+  display:flex;align-items:center;gap:8px;
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+.sb-logo-icon{font-size:22px}
+.sb-logo-text{font-size:16px;font-weight:700;text-shadow:0 0 16px rgba(0,255,157,0.5)}
+.sb-logo-badge{
+  font-size:9px;font-family:var(--mono);font-weight:600;
+  background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.2);
+  color:var(--green);padding:2px 6px;border-radius:4px;margin-left:auto;
+}
+
+.sb-section{padding:16px 20px 4px;font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.15em;text-transform:uppercase}
+
+.sb-link{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 20px;font-size:13px;color:var(--text2);
+  text-decoration:none;transition:all .15s;border-left:2px solid transparent;
+  
+}
+.sb-link:hover,.sb-link.active{
+  color:var(--text);border-left-color:var(--green);
+  background:rgba(0,255,157,0.04);
+}
+.sb-link.active{color:var(--green)}
+.sb-link-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.sb-link-badge{
+  margin-left:auto;font-size:9px;font-family:var(--mono);
+  background:rgba(0,255,157,0.1);color:var(--green);
+  padding:1px 6px;border-radius:3px;
+}
+.sb-link-badge.new{background:rgba(240,185,11,0.1);color:var(--yellow);border:1px solid rgba(240,185,11,0.2)}
+
+/* MAIN */
+.main{flex:1;max-width:900px;padding:60px 60px 120px;overflow:hidden}
+
+/* HERO */
+.doc-hero{margin-bottom:80px}
+.doc-hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:11px;color:var(--green);
+  border:1px solid rgba(0,255,157,0.2);border-radius:4px;
+  padding:4px 12px;margin-bottom:20px;
+  background:rgba(0,255,157,0.04);
+}
+.doc-hero h1{
+  font-size:clamp(36px,5vw,64px);font-weight:700;
+  line-height:1.05;margin-bottom:16px;
+  background:linear-gradient(135deg,#fff 0%,rgba(0,255,157,0.8) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.doc-hero-sub{font-size:18px;color:var(--text2);line-height:1.6;margin-bottom:32px;max-width:600px}
+.doc-hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--green);color:#000;border:none;border-radius:8px;
+  font-weight:700;font-size:14px;padding:12px 24px;
+  transition:all .2s;position:relative;overflow:hidden;font-family:var(--sans);
+}
+.btn-primary::after{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+  transition:left .4s;
+}
+.btn-primary:hover::after{left:100%}
+.btn-primary:hover{box-shadow:0 0 28px rgba(0,255,157,0.4);transform:translateY(-1px)}
+.btn-outline{
+  background:transparent;color:var(--text);border:1px solid var(--border2);
+  border-radius:8px;font-size:14px;font-weight:500;padding:12px 24px;
+  transition:all .2s;font-family:var(--sans);
+}
+.btn-outline:hover{border-color:rgba(0,255,157,0.3);color:var(--green)}
+
+/* QUICK STATS */
+.stats-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:80px;
+}
+.stat-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:20px;position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;width:0;height:2px;
+  background:linear-gradient(90deg,var(--green),transparent);
+  transition:width .3s;
+}
+.stat-card:hover::before{width:100%}
+.stat-card:hover{border-color:rgba(0,255,157,0.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+.stat-num{font-size:32px;font-weight:700;color:var(--green);font-family:var(--mono);margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text2)}
+
+/* SECTIONS */
+.doc-section{margin-bottom:72px;scroll-margin-top:40px}
+.section-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;
+}
+.section-tag::before{content:'';width:20px;height:1px;background:var(--border2)}
+.doc-section h2{font-size:28px;font-weight:700;margin-bottom:8px}
+.doc-section .lead{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:600px}
+
+/* STEP CARDS */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{
+  display:flex;gap:20px;position:relative;padding-bottom:32px;
+}
+.step:last-child{padding-bottom:0}
+.step:not(:last-child)::after{
+  content:'';position:absolute;left:19px;top:40px;bottom:0;
+  width:1px;background:linear-gradient(var(--border),transparent);
+}
+.step-num{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  border:1px solid var(--border2);background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);
+  position:relative;z-index:1;transition:all .2s;
+}
+.step:hover .step-num{background:rgba(0,255,157,0.08);border-color:rgba(0,255,157,0.3);box-shadow:0 0 16px rgba(0,255,157,0.15)}
+.step-body{flex:1;padding-top:8px}
+.step-title{font-size:16px;font-weight:600;margin-bottom:6px}
+.step-desc{font-size:14px;color:var(--text2);line-height:1.7}
+
+/* CODE BLOCK */
+.code-block{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;margin:20px 0;
+  transition:border-color .2s;
+}
+.code-block:hover{border-color:rgba(0,255,157,0.15)}
+.code-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  background:rgba(255,255,255,0.02);
+}
+.code-dots{display:flex;gap:6px}
+.code-dot{width:10px;height:10px;border-radius:50%}
+.code-dot.r{background:#ff5f57}.code-dot.y{background:#febc2e}.code-dot.g{background:#28c840}
+.code-lang{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.1em}
+.code-copy{
+  font-family:var(--mono);font-size:10px;color:var(--text3);
+  background:none;border:1px solid var(--border2);border-radius:4px;
+  padding:3px 10px;transition:all .15s;
+}
+.code-copy:hover{color:var(--green);border-color:rgba(0,255,157,0.3)}
+.code-copy.copied{color:var(--green)}
+pre{padding:20px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;color:#cdd6f4}
+pre::-webkit-scrollbar{height:4px}
+pre::-webkit-scrollbar-thumb{background:var(--border2)}
+.kw{color:#cba6f7}
+.str{color:#a6e3a1}
+.fn{color:#89b4fa}
+.cm{color:#585b70}
+.num{color:#fab387}
+
+/* FEATURE GRID */
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.feature-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:20px;transition:all .2s;position:relative;overflow:hidden;
+}
+.feature-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,255,157,0.04),transparent 60%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.feature-card:hover::after{opacity:1}
+.feature-card:hover{border-color:rgba(0,255,157,0.15);transform:translateY(-2px)}
+.fc-icon{font-size:24px;margin-bottom:12px}
+.fc-title{font-size:14px;font-weight:600;margin-bottom:6px}
+.fc-desc{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* INTERACTIVE DEMO */
+.demo-box{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;margin-top:24px;
+}
+.demo-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.02);
+}
+.demo-title{font-size:12px;color:var(--text2);font-family:var(--mono)}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:livePulse 1.5s infinite}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,157,0.4)}50%{opacity:.7;box-shadow:0 0 0 4px transparent}}
+.demo-body{padding:20px}
+.demo-input{
+  width:100%;background:rgba(0,255,157,0.03);border:1.5px solid rgba(0,255,157,0.2);
+  border-radius:8px;color:#fff;font-family:var(--mono);font-size:13px;
+  padding:12px 16px;outline:none;transition:all .2s;
+  font-style:italic;
+}
+.demo-input:focus{border-color:rgba(0,255,157,0.5);box-shadow:0 0 0 2px rgba(0,255,157,0.08);animation:inputPulse 2s infinite}
+.demo-input::placeholder{color:rgba(0,255,157,0.25)}
+@keyframes inputPulse{0%,100%{box-shadow:0 0 0 2px rgba(0,255,157,0.08)}50%{box-shadow:0 0 0 2px rgba(0,255,157,0.16)}}
+.demo-result{
+  margin-top:16px;padding:16px;background:var(--bg3);border-radius:8px;
+  font-family:var(--mono);font-size:12px;line-height:1.8;min-height:80px;
+  border:1px solid var(--border);
+}
+.demo-result.loading .dr-line{animation:shimmer 1.2s infinite}
+@keyframes shimmer{0%,100%{opacity:.3}50%{opacity:.7}}
+.dr-key{color:var(--text3)}
+.dr-val{color:var(--green)}
+.dr-val.red{color:var(--red)}
+
+/* FAQ ACCORDION */
+.faq{display:flex;flex-direction:column;gap:8px;margin-top:24px}
+.faq-item{
+  background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;
+  transition:border-color .2s;
+}
+.faq-item:hover{border-color:var(--border2)}
+.faq-item.open{border-color:rgba(0,255,157,0.2)}
+.faq-q{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;font-size:14px;font-weight:500;
+  transition:color .2s;user-select:none;
+}
+.faq-q:hover{color:var(--green)}
+.faq-chevron{
+  font-size:12px;color:var(--text3);transition:transform .3s;flex-shrink:0;
+  font-family:var(--mono);
+}
+.faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--green)}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;
+  font-size:13px;color:var(--text2);line-height:1.7;
+  padding:0 20px;border-top:0 solid var(--border);
+}
+.faq-item.open .faq-a{max-height:200px;padding:16px 20px;border-top-width:1px}
+
+/* CALLOUT */
+.callout{
+  display:flex;gap:14px;padding:16px 20px;border-radius:10px;
+  margin:20px 0;font-size:13px;line-height:1.7;
+}
+.callout.tip{background:rgba(0,255,157,0.05);border:1px solid rgba(0,255,157,0.15)}
+.callout.warn{background:rgba(240,185,11,0.05);border:1px solid rgba(240,185,11,0.15)}
+.callout.danger{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15)}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout-text{color:var(--text2)}
+.callout.tip .callout-text strong{color:var(--green)}
+.callout.warn .callout-text strong{color:var(--yellow)}
+.callout.danger .callout-text strong{color:var(--red)}
+
+/* TABLE */
+.doc-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:13px}
+.doc-table th{
+  text-align:left;padding:10px 16px;font-size:10px;
+  font-family:var(--mono);color:rgba(0,255,157,0.5);
+  letter-spacing:.1em;text-transform:uppercase;
+  border-bottom:1px solid rgba(0,255,157,0.1);
+}
+.doc-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text2)}
+.doc-table tr:hover td{background:rgba(0,255,157,0.02)}
+.doc-table td code{
+  font-family:var(--mono);font-size:12px;color:var(--green);
+  background:rgba(0,255,157,0.08);padding:2px 8px;border-radius:4px;
+}
+
+/* SCROLL PROGRESS */
+#progress{
+  position:fixed;top:0;left:0;height:2px;
+  background:linear-gradient(90deg,var(--green),#00ccff);
+  z-index:99999;width:0%;transition:width .1s;
+  box-shadow:0 0 8px rgba(0,255,157,0.5);
+}
+
+/* BACK TO TOP */
+#btt{
+  position:fixed;bottom:32px;right:32px;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border2);
+  color:var(--text2);font-size:16px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;opacity:0;transform:translateY(10px);z-index:100;
+}
+#btt.show{opacity:1;transform:translateY(0)}
+#btt:hover{border-color:rgba(0,255,157,0.3);color:var(--green);box-shadow:0 0 16px rgba(0,255,157,0.15)}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--green);color:#000;font-weight:700;font-size:12px;font-family:var(--mono);
+  padding:10px 20px;border-radius:8px;z-index:99999;
+  opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* FADE IN */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .sidebar{display:none}
+  .main{padding:32px 20px 80px}
+  .stats-row,.feature-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="glow"></div>
+<div id="progress"></div>
+<div id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+<div class="toast" id="toast"></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <span class="sb-logo-icon">📉</span>
+    <span class="sb-logo-text">NegaScreener</span>
+    <span class="sb-logo-badge">DOCS</span>
+  </div>
+
+  <div class="sb-section">Getting Started</div>
+  <a href="#intro" class="sb-link active"><span class="sb-link-icon">👋</span>Introduction</a>
+  <a href="#quickstart" class="sb-link"><span class="sb-link-icon">⚡</span>Quick Start</a>
+  <a href="#search" class="sb-link"><span class="sb-link-icon">🔍</span>Searching Tokens</a>
+
+  <div class="sb-section">Features</div>
+  <a href="#chart" class="sb-link"><span class="sb-link-icon">📈</span>Chart & Trading</a>
+  <a href="#ai" class="sb-link"><span class="sb-link-icon">🤖</span>Nega-AI Analysis</a>
+  <a href="#wallet" class="sb-link"><span class="sb-link-icon">🔌</span>Wallet Connect</a>
+  <a href="#trending" class="sb-link"><span class="sb-link-icon">🔥</span>Trending Tokens<span class="sb-link-badge new">NEW</span></a>
+
+  <div class="sb-section">Trading</div>
+  <a href="#buysell" class="sb-link"><span class="sb-link-icon">💱</span>Buy / Sell</a>
+  <a href="#fees" class="sb-link"><span class="sb-link-icon">💸</span>Fees & Slippage</a>
+
+  <div class="sb-section">Platform</div>
+  <a href="#launch" class="sb-link"><span class="sb-link-icon">🚀</span>Launch Token</a>
+  <a href="#faq" class="sb-link"><span class="sb-link-icon">❓</span>FAQ</a>
+  <a href="#api" class="sb-link"><span class="sb-link-icon">🔗</span>API Reference</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="doc-hero fade-in" id="intro">
+    <div style="
+      background: linear-gradient(135deg, rgba(0,255,157,0.06), rgba(0,255,157,0.02));
+      border: 1px solid rgba(0,255,157,0.2);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+    ">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--green),transparent)"></div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px">📉 the nega manifesto</div>
+      <div style="font-size:15px;font-weight:600;color:var(--text);line-height:1.5;margin-bottom:16px;font-style:italic">
+        "Made for negas by my negas."
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.9;max-width:640px">
+        Negas have always been underestimated. They have been suppressed.<br/>
+        But it's time to show us what you can — because<br/>
+        <span style="color:var(--green);font-weight:700">my negas do not stay poor.</span>
+        <span style="color:#fff;font-weight:600"> My negas push forward.</span>
+        <span style="color:var(--green);font-weight:800;font-size:15px;letter-spacing:.05em"> My negas RAGEEEEEE! 📉🔥</span>
+      </div>
+    </div>
+    <div class="doc-hero-tag">📉 v1.0 — ser read this</div>
+    <h1>NegaScreener<br/>Documentation</h1>
+    <p class="doc-hero-sub">The degen's guide to not losing all your money. Probably. We make no promises ser.</p>
+    <div class="doc-hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('quickstart').scrollIntoView({behavior:'smooth'})">Get Started ↓</button>
+      <button class="btn-outline" onclick="showToast('ngmi if you need the demo ser')">Try Demo</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row fade-in">
+    <div class="stat-card">
+      <div class="stat-num" id="statTokens">0</div>
+      <div class="stat-label">tokens analyzed today</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">4</div>
+      <div class="stat-label">chains supported</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">0%</div>
+      <div class="stat-label">financial advice given</div>
+    </div>
+  </div>
+
+  <!-- QUICK START -->
+  <div class="doc-section fade-in" id="quickstart">
+    <div class="section-tag">quickstart</div>
+    <h2>Get going in 30 seconds</h2>
+    <p class="lead">No signup. No account. No KYC. Just paste a CA and ape in ser.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Open NegaScreener</div>
+          <div class="step-desc">Go to negascreener.xyz. That's it. No installation, no extension, no wallet required just to look.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Paste a Contract Address</div>
+          <div class="step-desc">Copy any Solana token mint address and paste it into the search bar. Hit Enter or click "Ape In".</div>
+          <div class="code-block" style="margin-top:12px">
+            <div class="code-header">
+              <div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div>
+              <span class="code-lang">EXAMPLE CA</span>
+              <button class="code-copy" onclick="copyCode(this,'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263')">copy</button>
+            </div>
+            <pre>DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263  <span class="cm">// BONK token</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">View Chart & AI Analysis</div>
+          <div class="step-desc">Live DexScreener chart loads instantly. Nega-AI analyzes the token and gives you a brutally honest verdict. Connect wallet to trade directly.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH DEMO -->
+  <div class="doc-section fade-in" id="search">
+    <div class="section-tag">searching tokens</div>
+    <h2>How search works</h2>
+    <p class="lead">Paste any contract address from Solana, Ethereum, Base or BNB Chain.</p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <div class="live-dot"></div>
+        <span class="demo-title">interactive demo — try it</span>
+      </div>
+      <div class="demo-body">
+        <input class="demo-input" id="demoInput" placeholder="paste a CA here to see what happens..." oninput="handleDemoInput(this.value)" autocomplete="off" spellcheck="false"/>
+        <div class="demo-result" id="demoResult">
+          <span style="color:var(--text3);font-family:var(--mono);font-size:12px">// output appears here when you paste a CA above</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip" style="margin-top:20px">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text"><strong>Tip:</strong> NegaScreener automatically picks the pair with the highest liquidity when a token has multiple trading pairs. You can switch pairs manually on the chart page.</div>
+    </div>
+  </div>
+
+  <!-- CHART & TRADING -->
+  <div class="doc-section fade-in" id="chart">
+    <div class="section-tag">chart & trading</div>
+    <h2>The Chart (cope or mope)</h2>
+    <p class="lead">Powered by DexScreener's embed. Full TradingView chart with all the tools you need to convince yourself this is going up.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card" onmousemove="trackMouse(this,event)">
+        <div class="fc-icon">📊</div>
+        <div class="fc-title">Live Price Chart</div>
+        <div class="fc-desc">TradingView-powered chart with 1s to 1W timeframes. Watch your bags bleed in real time.</div>
+      </div>
+      <div class="feature-card" onmousemove="trackMouse(this,event)">
+        <div class="fc-icon">🔄</div>
+        <div class="fc-title">Live Trades Feed</div>
+        <div class="fc-desc">Every buy and sell as it happens. Green for buys, red for sells. Watch the jeets in action.</div>
+      </div>
+      <div class="feature-card" onmousemove="trackMouse(this,event)">
+        <div class="fc-icon">📉</div>
+        <div class="fc-title">Buy/Sell Ratio</div>
+        <div class="fc-desc">Visual bar showing buy vs sell pressure over 5m, 1h, 6h, 24h. More red than green = ngmi.</div>
+      </div>
+      <div class="feature-card" onmousemove="trackMouse(this,event)">
+        <div class="fc-icon">💰</div>
+        <div class="fc-title">Market Data</div>
+        <div class="fc-desc">MCap, volume, liquidity, txns, buys, sells — all live from DexScreener API.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI -->
+  <div class="doc-section fade-in" id="ai">
+    <div class="section-tag">nega-ai</div>
+    <h2>AI Analysis</h2>
+    <p class="lead">Powered by GPT-4o-mini. Brutally honest. Uses your OpenAI key stored locally — we never see it.</p>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots"><div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div></div>
+        <span class="code-lang">NEGA-AI SYSTEM PROMPT</span>
+        <button class="code-copy" onclick="copyCode(this,`You are Nega-AI, brutally honest degen crypto analyst. Max 180 words. End with VERDICT:`)">copy</button>
+      </div>
+      <pre><span class="cm">// What Nega-AI knows about your token:</span>
+{
+  <span class="str">"token"</span>: <span class="str">"TOKEN_NAME (SYMBOL)"</span>,
+  <span class="str">"price"</span>: <span class="str">"$0.000001"</span>,
+  <span class="str">"changes"</span>: { <span class="str">"5m"</span>: <span class="num">+12.4</span>, <span class="str">"1h"</span>: <span class="num">-3.2</span>, <span class="str">"24h"</span>: <span class="num">+420</span> },
+  <span class="str">"mcap"</span>: <span class="str">"$69K"</span>,
+  <span class="str">"liquidity"</span>: <span class="str">"$4.2K"</span>,
+  <span class="str">"buys"</span>: <span class="num">142</span>, <span class="str">"sells"</span>: <span class="num">89</span>,
+  <span class="str">"age"</span>: <span class="str">"2h"</span>
+}</pre>
+    </div>
+
+    <table class="doc-table">
+      <thead><tr><th>Verdict</th><th>Trigger keywords</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code style="color:#00ff9d">🚀 WAGMI</code></td><td>bullish, moon, gem, buy</td><td>Nega-AI thinks you might make it</td></tr>
+        <tr><td><code style="color:#ef4444">💀 NGMI</code></td><td>bearish, dump, sell</td><td>You're not gonna make it ser</td></tr>
+        <tr><td><code style="color:#ef4444">🚨 RUG ALERT</code></td><td>rug, scam, honeypot</td><td>Get out. Now. Seriously.</td></tr>
+        <tr><td><code style="color:#f0b90b">🟡 MID</code></td><td>everything else</td><td>Cope</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn" style="margin-top:20px">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-text"><strong>Not financial advice.</strong> Nega-AI is an AI that uses slang and makes stuff up sometimes. Never buy or sell based solely on what it says. Do your own research ser.</div>
+    </div>
+  </div>
+
+  <!-- WALLET -->
+  <div class="doc-section fade-in" id="wallet">
+    <div class="section-tag">wallet</div>
+    <h2>Connecting Your Wallet</h2>
+    <p class="lead">Supports Phantom, Solflare, and Backpack. Required only for trading — browsing is always free.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Click "Connect Wallet"</div>
+          <div class="step-desc">Top right navbar. Green button. Can't miss it unless you're blind from staring at charts.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Approve in wallet</div>
+          <div class="step-desc">Your wallet extension will pop up asking to connect. Click approve. We only request read access — no transaction permissions just from connecting.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">SOL & token balances load</div>
+          <div class="step-desc">Once connected, the buy/sell widget shows your real SOL balance and your token balance for whatever token you're viewing.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout danger">
+      <div class="callout-icon">🚨</div>
+      <div class="callout-text"><strong>We never ask for your seed phrase.</strong> If anything on this site asks for your 12/24 word recovery phrase, close it immediately and do not enter it.</div>
+    </div>
+  </div>
+
+  <!-- BUY SELL -->
+  <div class="doc-section fade-in" id="buysell">
+    <div class="section-tag">trading</div>
+    <h2>Buy / Sell Tokens</h2>
+    <p class="lead">Swap powered by Jupiter. Best route, 5% slippage default. Works on any token Jupiter supports.</p>
+
+    <table class="doc-table">
+      <thead><tr><th>Action</th><th>Input</th><th>Fee</th><th>Slippage</th></tr></thead>
+      <tbody>
+        <tr><td><code>BUY</code></td><td>SOL amount</td><td>Network only (~0.000005 SOL)</td><td>5% (500 bps)</td></tr>
+        <tr><td><code>SELL</code></td><td>Token % or amount</td><td>Network only (~0.000005 SOL)</td><td>5% (500 bps)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip" style="margin-top:20px">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text"><strong>Tip:</strong> For low liquidity tokens (under $10K liq), 5% slippage may not be enough. If your transaction keeps failing, the token may not be tradeable on Jupiter or has no route.</div>
+    </div>
+  </div>
+
+  <!-- FEES -->
+  <div class="doc-section fade-in" id="fees">
+    <div class="section-tag">fees</div>
+    <h2>Fees & Costs</h2>
+    <p class="lead">We charge nothing for browsing. Launch Token listing costs 0.03 SOL. Trading costs only the Solana network fee.</p>
+
+    <table class="doc-table">
+      <thead><tr><th>Action</th><th>Cost</th><th>Goes to</th></tr></thead>
+      <tbody>
+        <tr><td>Browse / search tokens</td><td><code>FREE</code></td><td>—</td></tr>
+        <tr><td>AI analysis (Nega-AI)</td><td><code>Your OpenAI key</code></td><td>OpenAI directly</td></tr>
+        <tr><td>Buy / sell tokens</td><td><code>~0.000005 SOL</code></td><td>Solana validators</td></tr>
+        <tr><td>Launch Token listing</td><td><code>0.03 SOL</code></td><td>NegaScreener treasury</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LAUNCH -->
+  <div class="doc-section fade-in" id="launch">
+    <div class="section-tag">launch token</div>
+    <h2>Listing Your Token</h2>
+    <p class="lead">Pay 0.03 SOL, fill in your details, get listed in "Recently Cooked Tokens". Simple.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Click "Launch Token" in navbar</div>
+          <div class="step-desc">Opens the listing form. Fill in your token's contract address, name, symbol, description, and socials.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Upload icon and banner</div>
+          <div class="step-desc">Square icon (min 200×200px) and optional banner (1920×640px). PNG, JPG or WebP, max 2MB each.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Pay 0.03 SOL & submit</div>
+          <div class="step-desc">Wallet popup asks to approve 0.03 SOL transfer. Once confirmed on-chain, your listing goes live. No refunds ser — it's on the blockchain.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="doc-section fade-in" id="faq">
+    <div class="section-tag">faq</div>
+    <h2>Frequently Asked Questions</h2>
+    <p class="lead">Questions degens actually ask.</p>
+
+    <div class="faq">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is this financial advice? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">No. Absolutely not. Nega-AI is a meme-speaking language model. Nothing on this site is financial advice. If you lose money please do not @ us on Twitter.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why can't I see my token? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Your token might not be indexed by DexScreener yet (can take a few minutes after launch), or the CA might be wrong. Double check the mint address and try again ser.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why does it say "swap not available"? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Jupiter doesn't support all tokens. Tokens with very low liquidity, new tokens with no routing, or tokens on unsupported DEXes won't have a swap route. Try again later or use pump.fun directly.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is my OpenAI key safe? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Your key is stored in your browser's localStorage only and is sent directly to api.openai.com. We never see it, log it, or store it on our servers. You can verify this in the browser DevTools network tab.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I get a refund on my 0.03 SOL listing fee? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">No. It's a blockchain transaction. Once confirmed it's gone. This is crypto ser, you know how it works.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why is there a fried chicken cursor? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Because we thought it was funny. That's it. That's the whole reason.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API -->
+  <div class="doc-section fade-in" id="api">
+    <div class="section-tag">api reference</div>
+    <h2>Data Sources</h2>
+    <p class="lead">NegaScreener is powered by these public APIs.</p>
+
+    <table class="doc-table">
+      <thead><tr><th>API</th><th>Endpoint</th><th>Used for</th><th>Key required</th></tr></thead>
+      <tbody>
+        <tr><td>DexScreener</td><td><code>api.dexscreener.com</code></td><td>Token data, pairs, prices</td><td>No</td></tr>
+        <tr><td>Jupiter v6</td><td><code>lite-api.jup.ag</code></td><td>Swap quotes & transactions</td><td>No</td></tr>
+        <tr><td>Birdeye</td><td><code>public-api.birdeye.so</code></td><td>Solana trending tokens</td><td>Yes (free)</td></tr>
+        <tr><td>OpenAI</td><td><code>api.openai.com</code></td><td>Nega-AI analysis</td><td>Yes (yours)</td></tr>
+        <tr><td>Jupiter token list</td><td><code>token.jup.ag</code></td><td>Token logos</td><td>No</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip" style="margin-top:24px">
+      <div class="callout-icon">🔗</div>
+      <div class="callout-text"><strong>Open source:</strong> NegaScreener's frontend is a single HTML file. Right click → View Source and copy whatever you want. We don't care. We're degens too.</div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+
+
+// SCROLL PROGRESS + SIDEBAR ACTIVE
+window.addEventListener('scroll',()=>{
+  const pct = (window.scrollY/(document.documentElement.scrollHeight-window.innerHeight))*100;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('btt').classList.toggle('show',window.scrollY>300);
+
+  // sidebar active
+  const sections = document.querySelectorAll('.doc-section');
+  let active = '';
+  sections.forEach(s=>{
+    if(window.scrollY >= s.offsetTop-120) active=s.id;
+  });
+  document.querySelectorAll('.sb-link').forEach(l=>{
+    l.classList.toggle('active',l.getAttribute('href')==='#'+active);
+  });
+});
+
+// FADE IN ON SCROLL
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// FEATURE CARD MOUSE TRACK (spotlight effect)
+function trackMouse(el,e){
+  const r=el.getBoundingClientRect();
+  const x=((e.clientX-r.left)/r.width*100).toFixed(1);
+  const y=((e.clientY-r.top)/r.height*100).toFixed(1);
+  el.style.setProperty('--mx',x+'%');
+  el.style.setProperty('--my',y+'%');
+}
+
+// COPY CODE
+function copyCode(btn,text){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='copied!';
+    btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+// TOAST
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// FAQ
+function toggleFaq(el){
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f=>f.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+
+// STAT COUNT UP
+function countUp(el,target,duration=1500){
+  const start=performance.now();
+  (function step(now){
+    const p=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*ease).toLocaleString();
+    if(p<1) requestAnimationFrame(step);
+  })(start);
+}
+setTimeout(()=>countUp(document.getElementById('statTokens'),4206),600);
+
+// DEMO INPUT
+let demoTimer;
+function handleDemoInput(val){
+  const res=document.getElementById('demoResult');
+  clearTimeout(demoTimer);
+  if(!val.trim()){
+    res.innerHTML='<span style="color:var(--text3);font-family:var(--mono);font-size:12px">// output appears here when you paste a CA above</span>';
+    return;
+  }
+  const isSolana = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(val.trim());
+  const isEth = /^0x[a-fA-F0-9]{40}$/.test(val.trim());
+
+  if(!isSolana && !isEth){
+    res.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:12px">// invalid CA format. that doesn\'t look right ser.</span>';
+    return;
+  }
+  res.innerHTML=`
+    <div class="dr-key">detecting chain...</div>
+    <div class="dr-line" style="color:var(--text3)">█████████████████</div>
+  `;
+  res.classList.add('loading');
+
+  demoTimer=setTimeout(()=>{
+    res.classList.remove('loading');
+    const chain = isEth ? 'ethereum' : 'solana';
+    const short = val.slice(0,6)+'...'+val.slice(-4);
+    res.innerHTML=`
+<span class="dr-key">chain:    </span><span class="dr-val">${chain}</span>
+<span class="dr-key">address:  </span><span class="dr-val">${short}</span>
+<span class="dr-key">status:   </span><span class="dr-val">✓ valid format</span>
+<span class="dr-key">action:   </span><span class="dr-val" style="color:var(--yellow)">paste this in NegaScreener to view live data →</span>
+    `.trim();
+  },900);
+}
+
+// SIDEBAR SMOOTH SCROLL
+document.querySelectorAll('.sb-link').forEach(link=>{
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    const id=link.getAttribute('href').slice(1);
+    const el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+</script>
+</body>
+</html>
